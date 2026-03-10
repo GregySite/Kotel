@@ -19,18 +19,17 @@
         .cam-title { padding: 12px; font-weight: bold; background: #222; text-align: center; }
         .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; }
         iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .footer-links { padding: 10px; display: flex; justify-content: space-around; background: #1a1a1a; }
         .btn-link { 
-            display: block; text-align: center; padding: 10px; background: #0055a4; 
-            color: white; text-decoration: none; font-size: 0.9em; font-weight: bold;
+            color: #a0c4ff; text-decoration: none; font-size: 0.8em; border: 1px solid #333; padding: 5px 10px; border-radius: 4px;
         }
-        .btn-link:hover { background: #003366; }
+        .btn-link:hover { background: #333; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Direct du Mur des Lamentations</h1>
-    <p style="margin:5px 0 0; color:#a0c4ff;">Flux mis à jour - Mars 2026</p>
+    <h1>Mur des Lamentations - Direct</h1>
 </header>
 
 <div class="container">
@@ -38,28 +37,28 @@
     <div class="cam-card">
         <div class="cam-title">Esplanade - Direct</div>
         <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/POgApZQbckI?autoplay=1&mute=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <iframe src="https://www.youtube-nocookie.com/embed/POgApZQbckI?autoplay=1&mute=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
         </div>
-        <a href="https://www.youtube.com/watch?v=POgApZQbckI" target="_blank" class="btn-link">Ouvrir sur YouTube</a>
+        <div class="footer-links">
+            <a href="https://www.youtube.com/watch?v=POgApZQbckI" target="_blank" class="btn-link">Lien direct YouTube</a>
+        </div>
     </div>
 
     <div class="cam-card">
         <div class="cam-title">Vue Panoramique - Aish</div>
         <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/8itS3V99vR0?autoplay=1&mute=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <iframe src="https://www.youtube-nocookie.com/embed/8itS3V99vR0?autoplay=1&mute=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
         </div>
-        <a href="https://www.youtube.com/watch?v=8itS3V99vR0" target="_blank" class="btn-link">Ouvrir sur YouTube</a>
-    </div>
-
-    <div class="cam-card">
-        <div class="cam-title">EarthCam HD</div>
-        <div class="video-wrapper">
-            <iframe src="https://www.earthcam.com/js/common/embed/embed.php?vid=westernwall&w=1200" allowfullscreen></iframe>
+        <div class="footer-links">
+            <a href="https://www.youtube.com/watch?v=8itS3V99vR0" target="_blank" class="btn-link">Lien direct YouTube</a>
         </div>
-        <a href="https://www.earthcam.com/world/israel/jerusalem/?cam=westernwall" target="_blank" class="btn-link">Ouvrir sur EarthCam</a>
     </div>
 
 </div>
+
+<p style="text-align:center; font-size:0.8em; color:#666; margin-top:20px;">
+    Note : Si les vidéos ne s'affichent pas, essayez d'ouvrir ce fichier avec un autre navigateur (Firefox par exemple) <br> ou de l'héberger sur une plateforme comme GitHub Pages ou Vercel.
+</p>
 
 </body>
 </html>
