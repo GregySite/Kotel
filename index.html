@@ -3,85 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kotel Live - Multi-Vues</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <title>Le Kotel - Multi-Vues Officiel</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #000; color: white; margin: 0; }
         header { background: #002244; text-align: center; padding: 15px; border-bottom: 2px solid #a0c4ff; }
         .container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 15px;
-            padding: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
         }
-        .cam-card { background: #111; border-radius: 8px; overflow: hidden; border: 1px solid #333; }
-        .cam-title { padding: 10px; font-size: 0.9em; background: #222; text-align: center; }
+        .cam-card { background: #111; border-radius: 12px; overflow: hidden; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .cam-title { padding: 12px; font-weight: bold; background: #222; text-align: center; border-bottom: 1px solid #333; }
         .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; }
-        video { width: 100%; height: 100%; }
-        .error-msg { position: absolute; top: 40%; width: 100%; text-align: center; color: #666; font-size: 0.8em; }
+        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        
+        @media (max-width: 500px) { .container { grid-template-columns: 1fr; padding: 10px; } }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Mur des Lamentations - Direct</h1>
+    <h1>Direct du Mur des Lamentations</h1>
+    <p style="margin: 5px 0 0; color: #a0c4ff; font-size: 0.9em;">Flux Officiels Certifiés</p>
 </header>
 
-<div class="container" id="video-grid"></div>
+<div class="container">
 
-<script>
-    // Liste des sources transmises par Deep Research
-    const sources = [
-        { 
-            title: "Vue Esplanade (Heritage Foundation)", 
-            url: "http://il28.cast-tv.com:1935/23595_LIVE_Kotel_Live/_definst_//23595_LIVE_Kotel_Live/playlist.m3u8"
-        },
-        { 
-            title: "Vue Aish HaTorah (EarthCam)", 
-            url: "https://video3.earthcam.com/fecnetwork/7949.flv/playlist.m3u8" 
-        },
-        { 
-            title: "Vue Secondaire (Reali-Tech)", 
-            url: "http://server1.reali-tech.com:1935/live/dolphin.stream/playlist.m3u8"
-        }
-    ];
+    <div class="cam-card">
+        <div class="cam-title">Esplanade - Flux Officiel</div>
+        <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/live_stream?channel=UCF_EXEMbZJ-E3L8oF6n5Rmw&autoplay=1&mute=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+    </div>
 
-    // --- LE DÉBLOQUEUR (Proxy CORS) ---
-    // On utilise un service qui permet de contourner les restrictions HTTPS/CORS
-    const proxy = "https://corsproxy.io/?";
+    <div class="cam-card">
+        <div class="cam-title">Vue Panoramique - Aish</div>
+        <div class="video-wrapper">
+            <iframe src="https://www.earthcam.com/js/common/embed/embed.php?vid=westernwall&w=1200" allowfullscreen></iframe>
+        </div>
+    </div>
 
-    const grid = document.getElementById('video-grid');
+    <div class="cam-card">
+        <div class="cam-title">Vue HD - Skyline</div>
+        <div class="video-wrapper">
+            <iframe src="https://www.skylinewebcams.com/fr/webcam/israel/jerusalem/jerusalem/western-wall.html" style="transform: scale(1.1); transform-origin: top;"></iframe>
+        </div>
+        <p style="font-size: 0.7em; text-align: center; color: #666; padding: 5px;">Note: Certains navigateurs bloquent l'affichage de Skyline dans une page tierce.</p>
+    </div>
 
-    sources.forEach((source, index) => {
-        const card = document.createElement('div');
-        card.className = 'cam-card';
-        card.innerHTML = `
-            <div class="cam-title">${source.title}</div>
-            <div class="video-wrapper">
-                <div class="error-msg">Chargement du flux...</div>
-                <video id="video-${index}" controls autoplay muted playsinline></video>
-            </div>
-        `;
-        grid.appendChild(card);
-
-        const video = document.getElementById(`video-${index}`);
-        
-        // On ajoute le proxy devant l'URL pour "nettoyer" la connexion
-        const finalUrl = proxy + encodeURIComponent(source.url);
-
-        if (Hls.isSupported()) {
-            const hls = new Hls();
-            hls.loadSource(finalUrl);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                card.querySelector('.error-msg').style.display = 'none';
-            });
-        } 
-        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = finalUrl;
-        }
-    });
-</script>
+</div>
 
 </body>
 </html>
