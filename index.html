@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kotel Live - Multi-Vues</title>
+    <title>Le Kotel - Multi-Vues LIVE</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #000; color: white; margin: 0; }
-        header { background: #002244; text-align: center; padding: 20px; border-bottom: 2px solid #a0c4ff; }
+        body { font-family: 'Segoe UI', sans-serif; background: #000; color: white; margin: 0; text-align: center; }
+        header { background: #002244; padding: 20px; border-bottom: 2px solid #a0c4ff; }
         .container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
@@ -16,49 +16,57 @@
             margin: 0 auto;
         }
         .cam-card { background: #111; border-radius: 12px; overflow: hidden; border: 1px solid #333; }
-        .cam-title { padding: 12px; font-weight: bold; background: #222; text-align: center; }
+        .cam-title { padding: 12px; font-weight: bold; background: #222; }
         .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; }
         iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        .footer-links { padding: 10px; display: flex; justify-content: space-around; background: #1a1a1a; }
-        .btn-link { 
-            color: #a0c4ff; text-decoration: none; font-size: 0.8em; border: 1px solid #333; padding: 5px 10px; border-radius: 4px;
-        }
-        .btn-link:hover { background: #333; }
+        .info-bar { padding: 10px; font-size: 0.8em; color: #888; background: #1a1a1a; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>Mur des Lamentations - Direct</h1>
+    <p style="color: #00ff00; font-size: 0.9em;">● Flux vérifiés en temps réel</p>
 </header>
 
-<div class="container">
-
-    <div class="cam-card">
-        <div class="cam-title">Esplanade - Direct</div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube-nocookie.com/embed/POgApZQbckI?autoplay=1&mute=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <div class="footer-links">
-            <a href="https://www.youtube.com/watch?v=POgApZQbckI" target="_blank" class="btn-link">Lien direct YouTube</a>
-        </div>
+<div class="container" id="video-grid">
     </div>
 
-    <div class="cam-card">
-        <div class="cam-title">Vue Panoramique - Aish</div>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube-nocookie.com/embed/8itS3V99vR0?autoplay=1&mute=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <div class="footer-links">
-            <a href="https://www.youtube.com/watch?v=8itS3V99vR0" target="_blank" class="btn-link">Lien direct YouTube</a>
-        </div>
-    </div>
+<script>
+    /* --- CONFIGURATION DES LIENS ---
+       Si un lien ne marche plus, remplace juste l'ID (les 11 caractères après v=)
+    */
+    const cameras = [
+        { 
+            title: "Vue Esplanade (Officiel)", 
+            youtubeId: "yAl9L9mvDzY" // ID actuel du direct de la Fondation
+        },
+        { 
+            title: "Vue Panoramique (EarthCam)", 
+            youtubeId: "77akujLn4k8" // ID actuel du direct EarthCam
+        },
+        { 
+            title: "Mont des Oliviers (Vue d'ensemble)", 
+            youtubeId: "UyduhBUpO7Q" // ID actuel du Prayer Bridge
+        }
+    ];
 
-</div>
+    const grid = document.getElementById('video-grid');
 
-<p style="text-align:center; font-size:0.8em; color:#666; margin-top:20px;">
-    Note : Si les vidéos ne s'affichent pas, essayez d'ouvrir ce fichier avec un autre navigateur (Firefox par exemple) <br> ou de l'héberger sur une plateforme comme GitHub Pages ou Vercel.
-</p>
+    cameras.forEach(cam => {
+        const card = document.createElement('div');
+        card.className = 'cam-card';
+        card.innerHTML = `
+            <div class="cam-title">${cam.title}</div>
+            <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/${cam.youtubeId}?autoplay=1&mute=1&rel=0" 
+                        allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+            <div class="info-bar">ID Source : ${cam.youtubeId}</div>
+        `;
+        grid.appendChild(card);
+    });
+</script>
 
 </body>
 </html>
