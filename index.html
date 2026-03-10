@@ -3,131 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kotel Live - Multi-Vues</title>
+    <title>Kotel Live - Direct</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: #121212; 
+            font-family: 'Segoe UI', sans-serif; 
+            background: #0f0f0f; 
             color: white; 
             margin: 0; 
             padding: 0;
         }
         header { 
-            background-color: #003366; 
-            color: white; 
+            background: linear-gradient(to bottom, #003366, #001a33);
             text-align: center; 
-            padding: 25px 20px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            padding: 20px; 
+            border-bottom: 2px solid #a0c4ff;
         }
-        header h1 { margin: 0; font-size: 2em; }
-        header p { margin: 10px 0 0; color: #a0c4ff; }
+        h1 { margin: 0; font-size: 1.8em; letter-spacing: 1px; }
         
         .container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 25px;
-            padding: 30px;
-            max-width: 1400px;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1600px;
             margin: 0 auto;
         }
         
         .cam-card { 
-            background: #1e1e1e; 
-            border-radius: 12px; 
+            background: #1a1a1a; 
+            border-radius: 8px; 
             overflow: hidden; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         
-        .cam-card h2 { 
-            font-size: 1.1em; 
-            margin: 0; 
-            padding: 15px; 
+        .cam-title { 
+            padding: 12px; 
+            font-weight: bold; 
             background: #252525;
-            text-align: center;
-            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-dot {
+            height: 10px;
+            width: 10px;
+            background-color: #00ff00;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            box-shadow: 0 0 8px #00ff00;
         }
         
         .video-wrapper {
             position: relative;
             width: 100%;
             aspect-ratio: 16/9;
-            background: black;
+            background: #000;
         }
         
-        video, iframe { 
-            width: 100%; 
-            height: 100%; 
-            border: none; 
-        }
+        video { width: 100%; height: 100%; outline: none; }
 
-        @media (max-width: 500px) {
-            .container { grid-template-columns: 1fr; padding: 15px; }
-            header h1 { font-size: 1.5em; }
+        @media (max-width: 600px) {
+            .container { grid-template-columns: 1fr; padding: 10px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Direct du Kotel</h1>
-    <p>Toutes les caméras en temps réel</p>
+    <h1>Mur des Lamentations</h1>
+    <div style="font-size: 0.9em; color: #a0c4ff; margin-top: 5px;">Jérusalem, Israël</div>
 </header>
 
-<div class="container" id="video-grid">
-    </div>
+<div class="container" id="video-grid"></div>
 
 <script>
-    /**
-     * --- ZONE DE CONFIGURATION ---
-     * Pour ajouter une caméra : 
-     * 1. Ajoute un bloc { title: "Nom", url: "Lien", type: "hls" ou "iframe" }
-     * 2. "hls" est pour les liens finissant par .m3u8
-     * 3. "iframe" est pour les lecteurs exportables (YouTube, EarthCam, etc.)
-     */
+    // --- LISTE DES SOURCES DIRECTES (.m3u8) ---
     const sources = [
         { 
-            title: "Vue Esplanade (Stable)", 
-            url: "https://cdn1.cast-tv.com/23595/Live_Kotel3_ABR/23595/Live_Kotel3_11SP/chunks.m3u8",
-            type: "hls"
+            title: "Esplanade - Vue Centrale", 
+            url: "https://cdn1.cast-tv.com/23595/Live_Kotel3_ABR/23595/Live_Kotel3_11SP/chunks.m3u8"
         },
         { 
-            title: "Vue Panoramique (EarthCam)", 
-            url: "https://www.earthcam.com/js/common/embed/embed.php?vid=westernwall&w=1200", 
-            type: "iframe"
+            title: "Vue Panoramique HD", 
+            url: "https://videos-3.earthcam.com/fecnetwork/7949.flv/playlist.m3u8" 
         }
     ];
 
     const grid = document.getElementById('video-grid');
 
     sources.forEach((source, index) => {
-        // Création de la carte
         const card = document.createElement('div');
         card.className = 'cam-card';
-        
-        let contentHtml = `<h2>${source.title}</h2><div class="video-wrapper">`;
-        
-        if (source.type === "hls") {
-            contentHtml += `<video id="video-${index}" controls autoplay muted playsinline></video>`;
-        } else {
-            contentHtml += `<iframe src="${source.url}" allowfullscreen></iframe>`;
-        }
-        
-        contentHtml += `</div>`;
-        card.innerHTML = contentHtml;
+        card.innerHTML = `
+            <div class="cam-title">
+                <span>${source.title}</span>
+                <span><span class="status-dot"></span> LIVE</span>
+            </div>
+            <div class="video-wrapper">
+                <video id="video-${index}" controls autoplay muted playsinline></video>
+            </div>
+        `;
         grid.appendChild(card);
 
-        // Si c'est du HLS, on initialise le lecteur
-        if (source.type === "hls") {
-            const video = document.getElementById(`video-${index}`);
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(source.url);
-                hls.attachMedia(video);
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = source.url;
-            }
+        const video = document.getElementById(`video-${index}`);
+
+        if (Hls.isSupported()) {
+            const hls = new Hls({
+                // Paramètres pour améliorer la stabilité des flux live
+                manifestLoadingMaxRetry: 10,
+                levelLoadingMaxRetry: 10
+            });
+            hls.loadSource(source.url);
+            hls.attachMedia(video);
+            
+            hls.on(Hls.Events.ERROR, function (event, data) {
+                if (data.fatal) {
+                    console.log("Erreur HLS fatale, tentative de relance...");
+                    hls.startLoad();
+                }
+            });
+        } 
+        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = source.url;
         }
     });
 </script>
