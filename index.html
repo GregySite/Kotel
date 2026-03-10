@@ -6,98 +6,35 @@
     <title>Kotel Live - Multi-Vues</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            background: #0a0a0a; 
-            color: white; 
-            margin: 0; 
-            padding: 0;
-        }
-        header { 
-            background: linear-gradient(135deg, #002244 0%, #001122 100%);
-            text-align: center; 
-            padding: 15px; 
-            border-bottom: 1px solid #1a3a5a;
-        }
-        h1 { margin: 0; font-size: 1.6em; text-transform: uppercase; letter-spacing: 2px; }
-        
+        body { font-family: 'Segoe UI', sans-serif; background: #000; color: white; margin: 0; }
+        header { background: #002244; text-align: center; padding: 15px; border-bottom: 2px solid #a0c4ff; }
         .container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 20px;
-            padding: 20px;
-            max-width: 1600px;
-            margin: 0 auto;
+            gap: 15px;
+            padding: 15px;
         }
-        
-        .cam-card { 
-            background: #161616; 
-            border-radius: 10px; 
-            overflow: hidden; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-            border: 1px solid #222;
-        }
-        
-        .cam-title { 
-            padding: 10px 15px; 
-            font-size: 0.9em;
-            font-weight: bold; 
-            background: #222;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .status-live {
-            color: #ff3333;
-            font-size: 0.8em;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .dot {
-            height: 8px;
-            width: 8px;
-            background-color: #ff3333;
-            border-radius: 50%;
-            animation: blink 1.5s infinite;
-        }
-
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-        
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: #000;
-        }
-        
-        video { width: 100%; height: 100%; object-fit: cover; }
-
-        @media (max-width: 600px) {
-            .container { grid-template-columns: 1fr; padding: 10px; }
-        }
+        .cam-card { background: #111; border-radius: 8px; overflow: hidden; border: 1px solid #333; }
+        .cam-title { padding: 10px; font-size: 0.9em; background: #222; text-align: center; }
+        .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; }
+        video { width: 100%; height: 100%; }
+        .error-msg { position: absolute; top: 40%; width: 100%; text-align: center; color: #666; font-size: 0.8em; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Mur des Lamentations</h1>
+    <h1>Mur des Lamentations - Direct</h1>
 </header>
 
 <div class="container" id="video-grid"></div>
 
 <script>
-    // --- LES SOURCES TROUVÉES PAR DEEP RESEARCH ---
+    // Liste des sources transmises par Deep Research
     const sources = [
         { 
-            title: "Flux Officiel (Heritage Foundation)", 
-            url: "https://il28.cast-tv.com:1935/23595_LIVE_Kotel_Live/_definst_//23595_LIVE_Kotel_Live/playlist.m3u8"
+            title: "Vue Esplanade (Heritage Foundation)", 
+            url: "http://il28.cast-tv.com:1935/23595_LIVE_Kotel_Live/_definst_//23595_LIVE_Kotel_Live/playlist.m3u8"
         },
         { 
             title: "Vue Aish HaTorah (EarthCam)", 
@@ -105,9 +42,13 @@
         },
         { 
             title: "Vue Secondaire (Reali-Tech)", 
-            url: "https://server1.reali-tech.com:1935/live/dolphin.stream/playlist.m3u8"
+            url: "http://server1.reali-tech.com:1935/live/dolphin.stream/playlist.m3u8"
         }
     ];
+
+    // --- LE DÉBLOQUEUR (Proxy CORS) ---
+    // On utilise un service qui permet de contourner les restrictions HTTPS/CORS
+    const proxy = "https://corsproxy.io/?";
 
     const grid = document.getElementById('video-grid');
 
@@ -115,47 +56,29 @@
         const card = document.createElement('div');
         card.className = 'cam-card';
         card.innerHTML = `
-            <div class="cam-title">
-                <span>${source.title}</span>
-                <span class="status-live"><span class="dot"></span> EN DIRECT</span>
-            </div>
+            <div class="cam-title">${source.title}</div>
             <div class="video-wrapper">
+                <div class="error-msg">Chargement du flux...</div>
                 <video id="video-${index}" controls autoplay muted playsinline></video>
             </div>
         `;
         grid.appendChild(card);
 
         const video = document.getElementById(`video-${index}`);
+        
+        // On ajoute le proxy devant l'URL pour "nettoyer" la connexion
+        const finalUrl = proxy + encodeURIComponent(source.url);
 
         if (Hls.isSupported()) {
-            const hls = new Hls({
-                enableWorker: true,
-                lowLatencyMode: true,
-                backBufferLength: 90
-            });
-            hls.loadSource(source.url);
+            const hls = new Hls();
+            hls.loadSource(finalUrl);
             hls.attachMedia(video);
-            
-            hls.on(Hls.Events.ERROR, function (event, data) {
-                if (data.fatal) {
-                    switch (data.type) {
-                        case Hls.ErrorTypes.NETWORK_ERROR:
-                            console.log("Erreur réseau, tentative de reconnexion...");
-                            hls.startLoad();
-                            break;
-                        case Hls.ErrorTypes.MEDIA_ERROR:
-                            console.log("Erreur média, tentative de récupération...");
-                            hls.recoverMediaError();
-                            break;
-                        default:
-                            hls.destroy();
-                            break;
-                    }
-                }
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                card.querySelector('.error-msg').style.display = 'none';
             });
         } 
         else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = source.url;
+            video.src = finalUrl;
         }
     });
 </script>
