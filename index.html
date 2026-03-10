@@ -1,1 +1,144 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>En Direct du Kotel - Webcams</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+        }
+        header p {
+            margin: 0;
+            font-size: 1.1em;
+            color: #d1e0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        .cam-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+        .cam-card:hover {
+            transform: translateY(-5px);
+        }
+        .cam-card h2 {
+            font-size: 1.3em;
+            margin: 15px 20px;
+            color: #003366;
+            text-align: center;
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* Ratio 16:9 pour YouTube */
+            height: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .links {
+            text-align: center;
+            padding: 15px 20px 20px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #0055a4;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: background-color 0.2s;
+        }
+        .button:hover {
+            background-color: #003366;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: #777;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Le Kotel en Direct</h1>
+        <p>Rassemblement des flux vidéo en direct du Mur des Lamentations à Jérusalem</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="cam-card">
+            <h2>Fondation du Kotel - Esplanade</h2>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/live_stream?channel=UCF_EXEMbZJ-E3L8oF6n5Rmw" allowfullscreen></iframe>
+            </div>
+            <div class="links">
+                <a href="https://thekotel.org/fr/" target="_blank" class="button">Site Officiel</a>
+            </div>
+        </div>
+
+        <div class="cam-card">
+            <h2>Aish.com - Vue Générale</h2>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/live_stream?channel=UC_y1qYhP6oYJ9rDq2wA9D1g" allowfullscreen></iframe>
+            </div>
+            <div class="links">
+                <a href="https://aish.com/westernwall/live/" target="_blank" class="button">Site Officiel</a>
+            </div>
+        </div>
+
+        <div class="cam-card">
+            <h2>Skyline Webcams - Jérusalem</h2>
+            <div class="links" style="padding-top: 40px;">
+                <p style="color: #555; margin-bottom: 20px; font-size: 0.95em;">
+                    Skyline ne permet pas toujours l'intégration directe sur un autre site. Cliquez ci-dessous pour ouvrir leur caméra haute définition.
+                </p>
+                <a href="https://www.skylinewebcams.com/fr/webcam/israel/jerusalem/jerusalem/western-wall.html" target="_blank" class="button">Ouvrir SkylineWebcams</a>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>Créé avec passion. Les flux vidéo appartiennent à leurs propriétaires respectifs (The Western Wall Heritage Foundation, Aish.com, etc.).</p>
+    </footer>
+
+</body>
+</html>
