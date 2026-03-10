@@ -1,7 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kotel Live - Multi-Vues</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #121212; 
+            color: white; 
+            margin: 0; 
+            padding: 0;
+        }
+        header { 
+            background-color: #003366; 
+            color: white; 
+            text-align: center; 
+            padding: 25px 20px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        header h1 { margin: 0; font-size: 2em; }
+        header p { margin: 10px 0 0; color: #a0c4ff; }
+        
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 25px;
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .cam-card { 
+            background: #1e1e1e; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+        }
+        
+        .cam-card h2 { 
+            font-size: 1.1em; 
+            margin: 0; 
+            padding: 15px; 
+            background: #252525;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+        
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: black;
+        }
+        
+        video, iframe { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+        }
+
+        @media (max-width: 500px) {
+            .container { grid-template-columns: 1fr; padding: 15px; }
+            header h1 { font-size: 1.5em; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Direct du Kotel</h1>
+    <p>Toutes les caméras en temps réel</p>
+</header>
+
+<div class="container" id="video-grid">
+    </div>
+
 <script>
-    // --- CONFIGURATION FACILE ---
-    // Type "hls" pour les liens directs .m3u8
-    // Type "iframe" pour les lecteurs YouTube ou sites tiers
+    /**
+     * --- ZONE DE CONFIGURATION ---
+     * Pour ajouter une caméra : 
+     * 1. Ajoute un bloc { title: "Nom", url: "Lien", type: "hls" ou "iframe" }
+     * 2. "hls" est pour les liens finissant par .m3u8
+     * 3. "iframe" est pour les lecteurs exportables (YouTube, EarthCam, etc.)
+     */
     const sources = [
         { 
             title: "Vue Esplanade (Stable)", 
@@ -18,15 +102,24 @@
     const grid = document.getElementById('video-grid');
 
     sources.forEach((source, index) => {
+        // Création de la carte
         const card = document.createElement('div');
         card.className = 'cam-card';
         
+        let contentHtml = `<h2>${source.title}</h2><div class="video-wrapper">`;
+        
         if (source.type === "hls") {
-            card.innerHTML = `
-                <h2>${source.title}</h2>
-                <video id="video-${index}" controls autoplay muted playsinline></video>
-            `;
-            grid.appendChild(card);
+            contentHtml += `<video id="video-${index}" controls autoplay muted playsinline></video>`;
+        } else {
+            contentHtml += `<iframe src="${source.url}" allowfullscreen></iframe>`;
+        }
+        
+        contentHtml += `</div>`;
+        card.innerHTML = contentHtml;
+        grid.appendChild(card);
+
+        // Si c'est du HLS, on initialise le lecteur
+        if (source.type === "hls") {
             const video = document.getElementById(`video-${index}`);
             if (Hls.isSupported()) {
                 const hls = new Hls();
@@ -35,15 +128,9 @@
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = source.url;
             }
-        } else {
-            // Pour EarthCam ou YouTube
-            card.innerHTML = `
-                <h2>${source.title}</h2>
-                <div style="aspect-ratio: 16/9;">
-                    <iframe src="${source.url}" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-                </div>
-            `;
-            grid.appendChild(card);
         }
     });
 </script>
+
+</body>
+</html>
