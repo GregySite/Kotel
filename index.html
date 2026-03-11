@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Kotel - Multi-Vues LIVE</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         /* Couleurs et Base */
         :root {
@@ -36,14 +37,14 @@
         h1 { margin: 0; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 1px; }
         .live-indicator { color: #00ff00; font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
 
-        /* Conteneur Flexbox (La magie opère ici) */
+        /* Grille Flexbox pour aligner 3 par 3 et centrer le reste */
         .container {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center; /* Centre les vidéos de la dernière ligne */
-            gap: 20px;
-            padding: 20px;
-            max-width: 1500px; /* Limite la largeur pour forcer 3 belles colonnes */
+            justify-content: center; /* Centre les vidéos sur la ligne si < 3 */
+            gap: 15px;
+            padding: 15px;
+            max-width: 1800px;
             margin: 0 auto;
         }
 
@@ -52,13 +53,11 @@
             border-radius: 12px; 
             overflow: hidden; 
             border: 1px solid #333;
-            transition: transform 0.2s ease;
-            
-            /* Calcul : 33.33% de la largeur moins l'espace du gap (20px) */
-            width: calc(33.333% - 14px); 
+            /* Calcul pour avoir exactement 3 colonnes sur PC (100%/3 - gap) */
+            width: calc(33.333% - 10px); 
+            min-width: 320px;
         }
 
-        /* Titre de la caméra */
         .cam-title { 
             padding: 10px; 
             font-size: 0.95rem; 
@@ -68,7 +67,6 @@
             text-align: center;
         }
 
-        /* Ratio 16:9 responsive */
         .video-wrapper { 
             position: relative; 
             width: 100%; 
@@ -76,7 +74,7 @@
             background: #000; 
         }
 
-        iframe { 
+        iframe, video { 
             position: absolute; 
             top: 0; 
             left: 0; 
@@ -85,16 +83,10 @@
             border: none; 
         }
 
-        /* Optimisations Tablette (2 par ligne) */
-        @media (max-width: 1000px) {
-            .cam-card { width: calc(50% - 10px); }
-        }
-
         /* Optimisations Mobile (1 par ligne) */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             h1 { font-size: 1.1rem; }
-            .container { padding: 10px; gap: 15px; }
-            .cam-title { font-size: 0.85rem; padding: 8px; }
+            .container { padding: 10px; gap: 10px; }
             .cam-card { width: 100%; }
         }
     </style>
@@ -106,32 +98,49 @@
     <div class="live-indicator">● LIVE JÉRUSALEM</div>
 </header>
 
-<div class="container" id="video-grid">
-    </div>
+<div class="container" id="video-grid"></div>
 
 <script>
-    // Configuration des IDs YouTube actuels
+    // Liste des caméras (YouTube et Cast-TV)
     const cameras = [
-        { title: "Esplanade", id: "yAl9L9mvDzY" },
-        { title: "Panoramique", id: "77akujLn4k8" },
-        { title: "Pont", id: "UyduhBUpO7Q" },
-        { title: "Pano large", id: "EGfiC6zIpEw" },
-        { title: "הכותל", id: "QFK1-XaBnlg" }
+        { title: "Esplanade", id: "yAl9L9mvDzY", type: "youtube" },
+        { title: "Panoramique", id: "77akujLn4k8", type: "youtube" },
+        { title: "Pont", id: "UyduhBUpO7Q", type: "youtube" },
+        { title: "Pano large", id: "EGfiC6zIpEw", type: "youtube" },
+        { title: "הכותל", id: "QFK1-XaBnlg", type: "youtube" },
+        { title: "Flux Direct (Cast-TV)", url: "https://cdn1.cast-tv.com/23595/Live_Kotel1_ABR/playlist.m3u8", type: "hls" }
     ];
 
     const grid = document.getElementById('video-grid');
 
-    cameras.forEach(cam => {
+    cameras.forEach((cam, index) => {
         const card = document.createElement('div');
         card.className = 'cam-card';
+        
+        let content = "";
+        if (cam.type === "youtube") {
+            content = `<iframe src="https://www.youtube.com/embed/${cam.id}?autoplay=1&mute=1&rel=0&modestbranding=1" allowfullscreen></iframe>`;
+        } else {
+            content = `<video id="video-${index}" controls autoplay muted playsinline></video>`;
+        }
+
         card.innerHTML = `
             <div class="cam-title">${cam.title}</div>
-            <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/${cam.id}?autoplay=1&mute=1&rel=0&modestbranding=1" 
-                        allow="autoplay; encrypted-media" allowfullscreen></iframe>
-            </div>
+            <div class="video-wrapper">${content}</div>
         `;
         grid.appendChild(card);
+
+        // Initialisation du flux HLS pour la 6e vidéo
+        if (cam.type === "hls") {
+            const video = document.getElementById(`video-${index}`);
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(cam.url);
+                hls.attachMedia(video);
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = cam.url;
+            }
+        }
     });
 </script>
 
