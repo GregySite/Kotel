@@ -6,7 +6,6 @@
     <title>Le Kotel - Multi-Vues LIVE</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        /* Couleurs et Base */
         :root {
             --bg-color: #050505;
             --card-bg: #1a1a1a;
@@ -15,12 +14,11 @@
         }
 
         body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
             background: var(--bg-color); 
             color: white; 
             margin: 0; 
             padding: 0;
-            -webkit-font-smoothing: antialiased;
         }
 
         header { 
@@ -30,21 +28,19 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             text-align: center;
         }
 
         h1 { margin: 0; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 1px; }
         .live-indicator { color: #00ff00; font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
 
-        /* Grille Flexbox pour aligner 3 par 3 et centrer le reste */
         .container {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center; /* Centre les vidéos sur la ligne si < 3 */
+            justify-content: center; 
             gap: 15px;
             padding: 15px;
-            max-width: 1800px;
+            max-width: 100%; /* On utilise toute la largeur de l'écran */
             margin: 0 auto;
         }
 
@@ -53,9 +49,9 @@
             border-radius: 12px; 
             overflow: hidden; 
             border: 1px solid #333;
-            /* Calcul pour avoir exactement 3 colonnes sur PC (100%/3 - gap) */
-            width: calc(33.333% - 10px); 
-            min-width: 320px;
+            /* Modifié à 31% pour garantir 3 colonnes sur PC sans déborder */
+            width: 31%; 
+            min-width: 300px; /* Sécurité pour ne pas être trop petit */
         }
 
         .cam-title { 
@@ -63,31 +59,30 @@
             font-size: 0.95rem; 
             font-weight: 600; 
             background: #252525;
-            border-bottom: 1px solid #333;
             text-align: center;
         }
 
         .video-wrapper { 
             position: relative; 
             width: 100%; 
-            padding-top: 56.25%; /* Ratio 16:9 */
+            padding-top: 56.25%; 
             background: #000; 
         }
 
         iframe, video { 
             position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            border: none; 
+            top: 0; left: 0; width: 100%; height: 100%; border: none; 
         }
 
-        /* Optimisations Mobile (1 par ligne) */
-        @media (max-width: 768px) {
-            h1 { font-size: 1.1rem; }
-            .container { padding: 10px; gap: 10px; }
+        /* Responsive : 2 par ligne sur tablette / petit PC */
+        @media (max-width: 1024px) {
+            .cam-card { width: 48%; }
+        }
+
+        /* Responsive : 1 par ligne sur smartphone */
+        @media (max-width: 650px) {
             .cam-card { width: 100%; }
+            h1 { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -101,7 +96,6 @@
 <div class="container" id="video-grid"></div>
 
 <script>
-    // Liste des caméras (YouTube et Cast-TV)
     const cameras = [
         { title: "Esplanade", id: "yAl9L9mvDzY", type: "youtube" },
         { title: "Panoramique", id: "77akujLn4k8", type: "youtube" },
@@ -117,12 +111,9 @@
         const card = document.createElement('div');
         card.className = 'cam-card';
         
-        let content = "";
-        if (cam.type === "youtube") {
-            content = `<iframe src="https://www.youtube.com/embed/${cam.id}?autoplay=1&mute=1&rel=0&modestbranding=1" allowfullscreen></iframe>`;
-        } else {
-            content = `<video id="video-${index}" controls autoplay muted playsinline></video>`;
-        }
+        let content = (cam.type === "youtube") 
+            ? `<iframe src="https://www.youtube.com/embed/${cam.id}?autoplay=1&mute=1&rel=0&modestbranding=1" allowfullscreen></iframe>`
+            : `<video id="video-${index}" controls autoplay muted playsinline></video>`;
 
         card.innerHTML = `
             <div class="cam-title">${cam.title}</div>
@@ -130,7 +121,6 @@
         `;
         grid.appendChild(card);
 
-        // Initialisation du flux HLS pour la 6e vidéo
         if (cam.type === "hls") {
             const video = document.getElementById(`video-${index}`);
             if (Hls.isSupported()) {
