@@ -30,19 +30,20 @@
             top: 0;
             z-index: 100;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            text-align: center;
         }
 
         h1 { margin: 0; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 1px; }
         .live-indicator { color: #00ff00; font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
 
-        /* Grille Adaptative */
+        /* Conteneur Flexbox (La magie opère ici) */
         .container {
-            display: grid;
-            /* Sur PC : colonnes de minimum 450px. Sur Mobile : 1 seule colonne automatique */
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 15px;
-            padding: 15px;
-            max-width: 1800px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* Centre les vidéos de la dernière ligne */
+            gap: 20px;
+            padding: 20px;
+            max-width: 1500px; /* Limite la largeur pour forcer 3 belles colonnes */
             margin: 0 auto;
         }
 
@@ -52,6 +53,9 @@
             overflow: hidden; 
             border: 1px solid #333;
             transition: transform 0.2s ease;
+            
+            /* Calcul : 33.33% de la largeur moins l'espace du gap (20px) */
+            width: calc(33.333% - 14px); 
         }
 
         /* Titre de la caméra */
@@ -81,18 +85,24 @@
             border: none; 
         }
 
-        /* Optimisations Mobile */
+        /* Optimisations Tablette (2 par ligne) */
+        @media (max-width: 1000px) {
+            .cam-card { width: calc(50% - 10px); }
+        }
+
+        /* Optimisations Mobile (1 par ligne) */
         @media (max-width: 600px) {
             h1 { font-size: 1.1rem; }
-            .container { padding: 10px; gap: 10px; }
+            .container { padding: 10px; gap: 15px; }
             .cam-title { font-size: 0.85rem; padding: 8px; }
+            .cam-card { width: 100%; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Le Kotel - Direct</h1>
+    <h1>Le Kotel en Direct</h1>
     <div class="live-indicator">● LIVE JÉRUSALEM</div>
 </header>
 
