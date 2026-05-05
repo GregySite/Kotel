@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Kotel - Multi-Vues Permanent</title>
+    <title>Le Kotel en Direct</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         :root {
@@ -13,40 +13,58 @@
             --header-bg: #001a33;
         }
 
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-color); color: white; margin: 0; padding: 0; }
-
-        header { 
-            background: var(--header-bg); padding: 15px; border-bottom: 2px solid var(--accent);
-            position: sticky; top: 0; z-index: 100; text-align: center;
+        body { 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            background: var(--bg-color); 
+            color: white; 
+            margin: 0; padding: 0;
         }
 
-        h1 { margin: 0; font-size: 1.4rem; text-transform: uppercase; }
-        .status { color: #00ff00; font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
+        header { 
+            background: var(--header-bg); 
+            padding: 15px; 
+            border-bottom: 2px solid var(--accent);
+            position: sticky; top: 0; z-index: 100;
+            text-align: center;
+        }
+
+        h1 { margin: 0; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 1px; }
+        .live-indicator { color: #00ff00; font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
 
         .container {
-            display: flex; flex-wrap: wrap; justify-content: center; 
-            gap: 15px; padding: 15px; max-width: 100%; margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; 
+            gap: 15px;
+            padding: 15px;
+            max-width: 100%;
+            margin: 0 auto;
         }
 
         .cam-card { 
-            background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #333;
-            width: 31%; /* 3 par ligne sur PC */
-            min-width: 320px;
+            background: var(--card-bg); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            border: 1px solid #333;
+            /* Largeur pour forcer 3 colonnes sur PC tout en laissant respirer les marges */
+            width: calc(33.333% - 20px); 
+            min-width: 300px;
         }
 
-        .cam-title { padding: 10px; font-size: 0.9rem; font-weight: 600; background: #252525; text-align: center; }
-
-        .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; }
-
-        video, iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-
-        /* Bouton Refresh pour relancer les flux si ça freeze */
-        #refresh-btn {
-            position: fixed; bottom: 20px; right: 20px; background: var(--accent);
-            color: white; border: none; padding: 10px 20px; border-radius: 50px;
-            cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 1000;
+        .cam-title { 
+            padding: 10px; font-size: 0.95rem; font-weight: 600; 
+            background: #252525; text-align: center;
         }
 
+        .video-wrapper { 
+            position: relative; width: 100%; padding-top: 56.25%; background: #000; 
+        }
+
+        iframe, video { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; 
+        }
+
+        /* Responsive : 1 par ligne sur smartphone */
         @media (max-width: 768px) {
             .cam-card { width: 100%; }
             h1 { font-size: 1.1rem; }
@@ -56,23 +74,21 @@
 <body>
 
 <header>
-    <h1>Direct du Mur des Lamentations</h1>
-    <div class="status">● FLUX SOURCES SÉCURISÉS (HLS)</div>
+    <h1>Le Kotel en Direct</h1>
+    <div class="live-indicator">● TRANSMISSION MULTI-VUES</div>
 </header>
-
-<button id="refresh-btn" onclick="location.reload()">Rafraîchir les caméras</button>
 
 <div class="container" id="video-grid"></div>
 
 <script>
-    // Ces liens sont les flux directs officiels (HLS). Ils sont BEAUCOUP plus stables que YouTube.
+    // Configuration des 6 caméras avec titres génériques
     const cameras = [
-        { title: "Esplanade - Vue Principale", url: "https://cdn1.cast-tv.com/23595/Live_Kotel1_ABR/playlist.m3u8", type: "hls" },
-        { title: "Section des Femmes", url: "https://cdn1.cast-tv.com/23595/Live_Kotel2_ABR/playlist.m3u8", type: "hls" },
-        { title: "Vue Panoramique", url: "https://cdn1.cast-tv.com/23595/Live_Kotel3_ABR/playlist.m3u8", type: "hls" },
-        { title: "Pont des Prières", url: "https://cdn1.cast-tv.com/23595/Live_Kotel4_ABR/playlist.m3u8", type: "hls" },
-        { title: "Arche de Wilson", url: "https://cdn1.cast-tv.com/23595/Live_Kotel5_ABR/playlist.m3u8", type: "hls" },
-        { title: "Vue Large Haute", url: "https://cdn1.cast-tv.com/23595/Live_Kotel6_ABR/playlist.m3u8", type: "hls" }
+        { title: "Vue 1", url: "https://cdn1.cast-tv.com/23595/Live_Kotel1_ABR/playlist.m3u8", type: "hls" },
+        { title: "Vue 2", url: "https://cdn1.cast-tv.com/23595/Live_Kotel2_ABR/playlist.m3u8", type: "hls" },
+        { title: "Vue 3", url: "https://cdn1.cast-tv.com/23595/Live_Kotel3_ABR/playlist.m3u8", type: "hls" },
+        { title: "Vue 4", id: "POgApZQbckI", type: "youtube" },
+        { title: "Vue 5", id: "8itS3V99vR0", type: "youtube" },
+        { title: "Vue 6", id: "UyduhBUpO7Q", type: "youtube" }
     ];
 
     const grid = document.getElementById('video-grid');
@@ -81,22 +97,30 @@
         const card = document.createElement('div');
         card.className = 'cam-card';
         
+        let content = "";
+        if (cam.type === "youtube") {
+            content = `<iframe src="https://www.youtube.com/embed/${cam.id}?autoplay=1&mute=1&rel=0&modestbranding=1" allowfullscreen></iframe>`;
+        } else {
+            content = `<video id="video-${index}" controls autoplay muted playsinline></video>`;
+        }
+
         card.innerHTML = `
             <div class="cam-title">${cam.title}</div>
-            <div class="video-wrapper">
-                <video id="video-${index}" controls autoplay muted playsinline></video>
-            </div>
+            <div class="video-wrapper">${content}</div>
         `;
         grid.appendChild(card);
 
-        const video = document.getElementById(`video-${index}`);
-        if (Hls.isSupported()) {
-            const hls = new Hls();
-            hls.loadSource(cam.url);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, function() { video.play(); });
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = cam.url;
+        // Initialisation HLS pour les flux directs
+        if (cam.type === "hls") {
+            const video = document.getElementById(`video-${index}`);
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(cam.url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() { video.play(); });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = cam.url;
+            }
         }
     });
 </script>
