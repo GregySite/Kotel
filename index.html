@@ -28,8 +28,7 @@
             text-align: center;
         }
 
-        h1 { margin: 0; font-size: 1.4rem; text-transform: uppercase; }
-        .live-status { color: #00ff00; font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
+        h1 { margin: 0; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 1px; }
 
         .container {
             display: flex;
@@ -37,7 +36,7 @@
             justify-content: center; 
             gap: 15px;
             padding: 15px;
-            max-width: 100%;
+            max-width: 1300px; /* Limite pour garder le 3x3 propre */
             margin: 0 auto;
         }
 
@@ -46,14 +45,14 @@
             border-radius: 12px; 
             overflow: hidden; 
             border: 1px solid #333;
-            /* Forçage de 3 par ligne sur PC */
+            /* Forçage strict de 3 colonnes sur PC */
             width: calc(33.333% - 20px); 
             min-width: 300px;
         }
 
         .cam-title { 
-            padding: 10px; font-size: 0.95rem; font-weight: 600; 
-            background: #252525; text-align: center;
+            padding: 10px; font-size: 0.95rem; font-weight: bold; 
+            background: #252525; text-align: center; color: var(--accent);
         }
 
         .video-wrapper { 
@@ -64,7 +63,6 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; 
         }
 
-        /* Smartphone : 1 par ligne */
         @media (max-width: 768px) {
             .cam-card { width: 100%; }
         }
@@ -74,20 +72,20 @@
 
 <header>
     <h1>Le Kotel en Direct</h1>
-    <div class="live-status">● FLUX TEMPS RÉEL</div>
 </header>
 
 <div class="container" id="video-grid"></div>
 
 <script>
-    // Liste des caméras (3 HLS stables + 3 YouTube mis à jour)
     const cameras = [
+        // Les 3 flux HLS stables (Cast-TV)
         { title: "Vue 1", url: "https://cdn1.cast-tv.com/23595/Live_Kotel1_ABR/playlist.m3u8", type: "hls" },
         { title: "Vue 2", url: "https://cdn1.cast-tv.com/23595/Live_Kotel2_ABR/playlist.m3u8", type: "hls" },
         { title: "Vue 3", url: "https://cdn1.cast-tv.com/23595/Live_Kotel3_ABR/playlist.m3u8", type: "hls" },
-        { title: "Vue 4", id: "POgApZQbckI", type: "youtube" }, // Esplanade
-        { title: "Vue 5", id: "8itS3V99vR0", type: "youtube" }, // Pano
-        { title: "Vue 6", id: "UyduhBUpO7Q", type: "youtube" }  // Pont
+        // Les 3 flux YouTube (IDs mis à jour Mai 2026)
+        { title: "Vue 4", id: "POgApZQbckI", type: "youtube" }, 
+        { title: "Vue 5", id: "QFK1-XaBnlg", type: "youtube" }, 
+        { title: "Vue 6", id: "EGfiC6zIpEw", type: "youtube" }
     ];
 
     const grid = document.getElementById('video-grid');
@@ -96,12 +94,9 @@
         const card = document.createElement('div');
         card.className = 'cam-card';
         
-        let content = "";
-        if (cam.type === "youtube") {
-            content = `<iframe src="https://www.youtube.com/embed/${cam.id}?autoplay=1&mute=1&rel=0&modestbranding=1" allowfullscreen></iframe>`;
-        } else {
-            content = `<video id="video-${index}" controls autoplay muted playsinline></video>`;
-        }
+        let content = (cam.type === "youtube") 
+            ? `<iframe src="https://www.youtube.com/embed/${cam.id}?autoplay=1&mute=1&rel=0" allowfullscreen></iframe>`
+            : `<video id="video-${index}" controls autoplay muted playsinline></video>`;
 
         card.innerHTML = `
             <div class="cam-title">${cam.title}</div>
@@ -115,7 +110,6 @@
                 const hls = new Hls();
                 hls.loadSource(cam.url);
                 hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() { video.play(); });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = cam.url;
             }
