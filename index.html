@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Kotel - 6 Vues</title>
+    <title>Le Kotel - Multi-Vues</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         :root {
@@ -14,7 +14,7 @@
         }
 
         body { 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
+            font-family: 'Segoe UI', sans-serif; 
             background: var(--bg-color); 
             color: white; 
             margin: 0; padding: 0;
@@ -29,7 +29,7 @@
         }
 
         h1 { margin: 0; font-size: 1.4rem; text-transform: uppercase; }
-        .status { color: #00ff00; font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
+        .live-status { color: #00ff00; font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
 
         .container {
             display: flex;
@@ -46,7 +46,7 @@
             border-radius: 12px; 
             overflow: hidden; 
             border: 1px solid #333;
-            /* Forçage de 3 colonnes sur PC */
+            /* Forçage de 3 par ligne sur PC */
             width: calc(33.333% - 20px); 
             min-width: 300px;
         }
@@ -64,31 +64,30 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; 
         }
 
-        /* Mode Smartphone : 1 par ligne */
+        /* Smartphone : 1 par ligne */
         @media (max-width: 768px) {
             .cam-card { width: 100%; }
-            h1 { font-size: 1.1rem; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Direct du Kotel</h1>
-    <div class="status">● TRANSMISSION MULTI-VUES</div>
+    <h1>Le Kotel en Direct</h1>
+    <div class="live-status">● FLUX TEMPS RÉEL</div>
 </header>
 
 <div class="container" id="video-grid"></div>
 
 <script>
-    // Configuration optimisée pour la stabilité
+    // Liste des caméras (3 HLS stables + 3 YouTube mis à jour)
     const cameras = [
         { title: "Vue 1", url: "https://cdn1.cast-tv.com/23595/Live_Kotel1_ABR/playlist.m3u8", type: "hls" },
         { title: "Vue 2", url: "https://cdn1.cast-tv.com/23595/Live_Kotel2_ABR/playlist.m3u8", type: "hls" },
-        { title: "Vue 3", id: "POgApZQbckI", type: "youtube" },
-        { title: "Vue 4", id: "8itS3V99vR0", type: "youtube" },
-        { title: "Vue 5", id: "UyduhBUpO7Q", type: "youtube" },
-        { title: "Vue 6", id: "EGfiC6zIpEw", type: "youtube" }
+        { title: "Vue 3", url: "https://cdn1.cast-tv.com/23595/Live_Kotel3_ABR/playlist.m3u8", type: "hls" },
+        { title: "Vue 4", id: "POgApZQbckI", type: "youtube" }, // Esplanade
+        { title: "Vue 5", id: "8itS3V99vR0", type: "youtube" }, // Pano
+        { title: "Vue 6", id: "UyduhBUpO7Q", type: "youtube" }  // Pont
     ];
 
     const grid = document.getElementById('video-grid');
