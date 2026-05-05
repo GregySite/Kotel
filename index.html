@@ -40,7 +40,7 @@
             justify-content: center; 
             gap: 15px;
             padding: 15px;
-            max-width: 100%; /* On utilise toute la largeur de l'écran */
+            max-width: 100%;
             margin: 0 auto;
         }
 
@@ -49,9 +49,9 @@
             border-radius: 12px; 
             overflow: hidden; 
             border: 1px solid #333;
-            /* Modifié à 31% pour garantir 3 colonnes sur PC sans déborder */
+            /* Forçage du 3 par ligne sur PC */
             width: 31%; 
-            min-width: 300px; /* Sécurité pour ne pas être trop petit */
+            min-width: 300px;
         }
 
         .cam-title { 
@@ -74,7 +74,7 @@
             top: 0; left: 0; width: 100%; height: 100%; border: none; 
         }
 
-        /* Responsive : 2 par ligne sur tablette / petit PC */
+        /* Responsive : 2 par ligne sur tablette */
         @media (max-width: 1024px) {
             .cam-card { width: 48%; }
         }
@@ -89,20 +89,21 @@
 <body>
 
 <header>
-    <h1>Le Kotel - Direct</h1>
+    <h1>Le Kotel en Direct</h1>
     <div class="live-indicator">● LIVE JÉRUSALEM</div>
 </header>
 
 <div class="container" id="video-grid"></div>
 
 <script>
+    // --- MISE À JOUR DES LIENS ICI ---
     const cameras = [
-        { title: "Esplanade", id: "yAl9L9mvDzY", type: "youtube" },
-        { title: "Panoramique", id: "77akujLn4k8", type: "youtube" },
+        { title: "Esplanade", id: "POgApZQbckI", type: "youtube" },
+        { title: "Panoramique", id: "8itS3V99vR0", type: "youtube" },
         { title: "Pont", id: "UyduhBUpO7Q", type: "youtube" },
         { title: "Pano large", id: "EGfiC6zIpEw", type: "youtube" },
         { title: "הכותל", id: "QFK1-XaBnlg", type: "youtube" },
-        { title: "Kotel HaKatan", url: "https://cdn1.cast-tv.com/23595/Live_Kotel1_ABR/playlist.m3u8", type: "hls" }
+        { title: "Flux Direct (Cast-TV)", url: "https://cdn1.cast-tv.com/23595/Live_Kotel1_ABR/playlist.m3u8", type: "hls" }
     ];
 
     const grid = document.getElementById('video-grid');
